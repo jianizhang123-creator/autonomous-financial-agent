@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Autonomous Financial Agent</title>
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+    <div class="header-left">
+        <h1>🎯 Autonomous Financial Agent</h1>
+        <p>Goal-Driven Autonomous Planning with Event-Driven Decision Architecture</p>
+    </div>
+    <div class="header-status">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">Ready</span>
+    </div>
+</div>
+
+<!-- Main Layout -->
+<div class="main">
+    <!-- Left Panel -->
+    <div class="left-panel">
+        <div class="panel-section">
+            <div class="panel-title">Presets</div>
+            <div id="presetsContainer"></div>
+        </div>
+        <div class="panel-section">
+            <div class="panel-title">Goal Setup</div>
+            <div class="form-group">
+                <label class="form-label">Financial Goal 财务目标</label>
+                <textarea class="form-textarea" id="goalInput" placeholder="描述你的财务目标..."></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Goal Type</label>
+                <select class="form-select" id="goalType">
+                    <option value="savings">Savings 攒钱</option>
+                    <option value="debt_repayment">Debt Repayment 还款</option>
+                    <option value="spending_reduction">Spending Reduction 消费瘦身</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Target (¥)</label>
+                    <input type="number" class="form-input" id="targetAmount" placeholder="5000">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Days</label>
+                    <input type="number" class="form-input" id="targetDays" placeholder="90">
+                </div>
+            </div>
+            <button class="btn btn-primary" id="createPlanBtn" onclick="createPlan()">Create Plan</button>
+        </div>
+        <div class="panel-section" id="profileSection" style="flex:1">
+            <div class="panel-title">User Profile 用户画像</div>
+            <div id="profileContent"><span style="color:var(--text-tertiary);font-size:11px">Loading...</span></div>
+        </div>
+    </div>
+
+    <!-- Center Content -->
+    <div class="center-content" id="centerContent">
+        <div class="welcome" id="welcomeState">
+            <div class="welcome-icon">🎯</div>
+            <h2>Set a Financial Goal to Begin</h2>
+            <p>The agent will autonomously decompose your goal, create a budget plan, and monitor execution through simulated real-time events — with human-in-the-loop approval for every decision.</p>
+        </div>
+        <div id="planContent" style="display:none"></div>
+        <div id="eventFeed" class="event-feed"></div>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="right-panel">
+        <div class="memory-section">
+            <div class="memory-title"><span class="dot" style="background:var(--primary)"></span>Working Memory</div>
+            <div id="workingMemoryContent">
+                <div style="color:var(--text-tertiary);font-size:11px">No active goal</div>
+            </div>
+        </div>
+        <div class="memory-section">
+            <div class="memory-title"><span class="dot" style="background:var(--success)"></span>User Profile</div>
+            <div id="userProfileContent">
+                <div style="color:var(--text-tertiary);font-size:11px">Loading...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bottom Bar -->
+<div class="bottom-bar">
+    <span class="bar-label">Event Simulator</span>
+    <button class="event-btn" onclick="showEventModal('income_received')" disabled id="ev_income">💰 Income</button>
+    <button class="event-btn" onclick="showEventModal('large_expense')" disabled id="ev_expense">💸 Expense</button>
+    <button class="event-btn" onclick="showEventModal('budget_threshold')" disabled id="ev_budget">⚠️ Budget</button>
+    <button class="event-btn" onclick="showEventModal('milestone_reached')" disabled id="ev_milestone">🎯 Milestone</button>
+    <button class="event-btn" onclick="showEventModal('bill_due')" disabled id="ev_bill">📅 Bill</button>
+    <button class="event-btn" onclick="showEventModal('anomaly_detected')" disabled id="ev_anomaly">🔍 Anomaly</button>
+    <button class="event-btn simulate-day" onclick="simulateDay()" disabled id="ev_simulate">▶ Simulate Day</button>
+</div>
+
+<!-- Event Input Modal -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+        <h3 id="modalTitle">Event Details</h3>
+        <div id="modalFields"></div>
+        <button class="btn btn-primary" onclick="submitEvent()">Trigger Event</button>
+        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+    </div>
+</div>
+
+<!-- Scripts: load order matters (no build step, vanilla JS) -->
+<script src="/static/js/api.js"></script>
+<script src="/static/js/app.js"></script>
+<script src="/static/js/components/memory-inspector.js"></script>
+<script src="/static/js/components/goal-panel.js"></script>
+<script src="/static/js/components/event-feed.js"></script>
+</body>
+</html>

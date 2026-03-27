@@ -4,3 +4,5 @@ __pycache__/
 .env
 *.txt
 !requirements.txt
+data/memory.json
+.pytest_cache/

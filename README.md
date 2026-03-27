@@ -178,8 +178,67 @@ Every event triggers a 3-agent chain: **Router → Monitor → Insight**, produc
 |-----------|--------|-----|
 | **AI** | Claude API (Haiku 4.5) | Optimized for speed in multi-agent chains; 5 agents need fast inference |
 | **Backend** | Flask + SSE | Lightweight streaming without WebSocket complexity |
-| **Frontend** | Vanilla HTML/CSS/JS | Single-file, zero build step, portfolio-friendly |
+| **Frontend** | Vanilla HTML/CSS/JS | Zero build step, modular components, portfolio-friendly |
 | **Memory** | JSON file | Dual-layer state management without database overhead |
+| **Testing** | pytest | Unit + integration tests for agents, memory, and routes |
+
+## Project Structure
+
+```
+autonomous-financial-agent/
+├── app.py                         # Flask entry point — registers blueprints, serves frontend
+├── config.py                      # Shared constants (model, paths)
+│
+├── agents/                        # 5 specialized agents, each independently iterable
+│   ├── base.py                    # Claude API calls, JSON parsing, prompt loading
+│   ├── goal_decomposition.py      # Breaks goals into phased sub-tasks
+│   ├── planning.py                # Category-level budget adjustments
+│   ├── event_router.py            # Priority classification + routing
+│   ├── execution_monitor.py       # Plan deviation detection + adjustment
+│   └── insight.py                 # Empathetic explanation generation
+│
+├── prompts/                       # System prompts as standalone markdown (decoupled from code)
+│   ├── goal_decomposition.md
+│   ├── planning.md
+│   ├── event_router.md
+│   ├── execution_monitor.md
+│   └── insight.md
+│
+├── memory/                        # Dual-layer memory system
+│   ├── store.py                   # JSON persistence (load / save)
+│   ├── user_profile.py            # Profile → markdown context formatter
+│   └── working_memory.py          # Session state → markdown context formatter
+│
+├── events/
+│   └── stream.py                  # Server-Sent Events formatting
+│
+├── routes/                        # Flask Blueprints — one per pipeline
+│   ├── plan.py                    # POST /api/plan (Goal Decomposition → Planning)
+│   ├── event.py                   # POST /api/event (Router → Monitor → Insight)
+│   └── approve.py                 # POST /api/approve + GET /api/status, /api/presets
+│
+├── presets/
+│   └── scenarios.py               # 3 demo financial goals
+│
+├── static/                        # Frontend assets
+│   ├── index.html                 # HTML skeleton
+│   ├── css/style.css              # All styles
+│   └── js/
+│       ├── api.js                 # SSE streaming client
+│       ├── app.js                 # State management + initialization
+│       └── components/
+│           ├── goal-panel.js      # Left panel: presets, goal form, plan rendering
+│           ├── event-feed.js      # Center: event cards, agent chain, suggestions
+│           └── memory-inspector.js# Right panel: live memory display
+│
+├── tests/                         # pytest test suite
+│   ├── test_agents.py             # JSON parsing, prompt loading
+│   ├── test_memory.py             # Memory CRUD, context formatters
+│   └── test_routes.py             # API endpoint integration tests
+│
+└── data/
+    └── memory.json                # Runtime persistent state (gitignored)
+```
 
 ## Quick Start
 
@@ -190,7 +249,10 @@ cd autonomous-financial-agent
 pip install -r requirements.txt
 export ANTHROPIC_API_KEY=your_key_here
 
-python server.py              # → http://localhost:8080
+python app.py                      # → http://localhost:8080
+
+# Run tests
+pytest tests/ -v
 ```
 
 ## Key Design Decisions
